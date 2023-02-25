@@ -33,11 +33,13 @@ const closeMask = () => {
     <h3 class="name">Fin</h3>
     <p class="sign">念念不忘，必有回响</p>
     <div class="social">
-      <span
-        ><svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-github"></use>
-        </svg>
-      </span>
+      <a href="https://github.com/sunyangy" target="_blank"
+        ><span
+          ><svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-github"></use>
+          </svg> </span
+      ></a>
+
       <span>
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-youxiang4"></use>
