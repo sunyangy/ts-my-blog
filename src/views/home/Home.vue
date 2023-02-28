@@ -1,61 +1,41 @@
 <script setup lang="ts">
+import Markdown from "vue3-markdown-it";
 import InfoCard from "../../components/InfoCard.vue";
+import * as Article from "../../api/article";
+import { onMounted, reactive } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const state = reactive({
+  page: 1,
+  size: 5,
+  articles: [],
+});
+onMounted(() => {
+  getArticleList();
+});
+const getArticleList = async () => {
+  const result = await Article.reqGetArticleList(state.page, state.size);
+  state.articles = result.data.result;
+};
 </script>
 
 <template>
+  <!-- <el-button type="primary">点击</el-button> -->
   <div class="container">
     <div class="main-container">
       <InfoCard />
       <main class="article-container" id="article-container">
-        <article class="article-item">
-          <span class="time">January 25 2023</span>
-          <h3 class="title">远方的家</h3>
-          <div class="content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-            eum odit rem repudiandae consectetur, accusantium possimus
-            voluptatum ullam, quaerat quos et inventore a ut expedita aliquid
-            quod ad laboriosam! Laboriosam.
-          </div>
-        </article>
-        <article class="article-item">
-          <span class="time">January 25 2023</span>
-          <h3 class="title">远方的家</h3>
-          <div class="content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-            eum odit rem repudiandae consectetur, accusantium possimus
-            voluptatum ullam, quaerat quos et inventore a ut expedita aliquid
-            quod ad laboriosam! Laboriosam.
-          </div>
-        </article>
-        <article class="article-item">
-          <span class="time">January 25 2023</span>
-          <h3 class="title">远方的家</h3>
-          <div class="content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-            eum odit rem repudiandae consectetur, accusantium possimus
-            voluptatum ullam, quaerat quos et inventore a ut expedita aliquid
-            quod ad laboriosam! Laboriosam.
-          </div>
-        </article>
-        <article class="article-item">
-          <span class="time">January 25 2023</span>
-          <h3 class="title">远方的家</h3>
-          <div class="content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-            eum odit rem repudiandae consectetur, accusantium possimus
-            voluptatum ullam, quaerat quos et inventore a ut expedita aliquid
-            quod ad laboriosam! Laboriosam.
-          </div>
-        </article>
-        <article class="article-item">
-          <span class="time">January 25 2023</span>
-          <h3 class="title">远方的家</h3>
-          <div class="content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-            eum odit rem repudiandae consectetur, accusantium possimus
-            voluptatum ullam, quaerat quos et inventore a ut expedita aliquid
-            quod ad laboriosam! Laboriosam.
-          </div>
+        <article
+          class="article-item"
+          v-for="article in state.articles"
+          :key="article.id"
+          @click="router.push(`/new/${article.id}`)"
+        >
+          <span class="time">{{ article.createTime.split("T")[0] }}</span>
+          <h3 class="title">{{ article.title }}</h3>
+          <!-- <div class="content">
+            <Markdown :source="article.content" />
+          </div> -->
         </article>
       </main>
     </div>
@@ -63,32 +43,6 @@ import InfoCard from "../../components/InfoCard.vue";
 </template>
 
 <style scoped lang="less">
-// .navigate-container {
-//   height: 4rem;
-//   display: flex;
-//   margin-top: 2rem;
-//   justify-content: center;
-//   align-items: center;
-//   .navigate {
-//     width: 100rem;
-//     max-width: 1120px;
-//     display: flex;
-//     justify-content: end;
-//     .nav-items {
-//       width: 20rem;
-//       display: flex;
-//       justify-content: space-around;
-
-//       span {
-//         font-size: 22px;
-//         font-weight: 900;
-//         color: #75a3a3;
-//         cursor: pointer;
-//       }
-//     }
-//   }
-// }
-
 .container {
   display: flex;
   justify-content: center;
@@ -148,8 +102,8 @@ import InfoCard from "../../components/InfoCard.vue";
     width: 70rem;
     // border-bottom: 1px solid saddlebrown;
     .article-item {
-      height: 12rem;
-      padding: 2rem 0;
+      // height: 12rem;
+      padding: 1rem 0;
       border-bottom: 2px solid #478566;
       overflow: hidden;
       cursor: pointer;

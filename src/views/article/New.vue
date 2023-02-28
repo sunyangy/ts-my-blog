@@ -1,32 +1,50 @@
 <script setup lang="ts">
 import Markdown from "vue3-markdown-it";
-const source = `## 这是
+import { marked } from "marked";
+import * as Article from "../../api/article";
+import { useRoute } from "vue-router";
+import { computed, onMounted, reactive } from "vue";
+const route = useRoute();
+const { articleId } = route.params;
+const state = reactive({
+  article: {},
+});
 
+const getArticleDetail = async () => {
+  const result = await Article.reqGetArticleById(articleId);
 
-- 大飒飒的
-- 大撒大撒
+  state.article = result.data.article;
+};
 
-大苏打实打
+const markedtext = computed(() => {
+  return marked.parse(state.article.content);
+});
 
-
-1. 伟大的adasdsd
-2. 打算大苏打是
-`;
+onMounted(() => {
+  getArticleDetail();
+});
 </script>
 
 <template>
   <article>
+    <!-- <div v-html="markedtext"></div> -->
     <div class="top">
-      <h1 class="title">人生无论怎么度过都像是浪费</h1>
-      <p class="time">January 25, 2023</p>
+      <h1 class="title">{{ state.article.title }}</h1>
+      <p class="time">{{ state.article.updateTime?.split("T")[0] }}</p>
     </div>
     <div class="markdown-con">
-      <Markdown :source="source" />
+      <Markdown :source="state.article.content" />
     </div>
   </article>
 </template>
 
 <style scoped lang="less">
+article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .top {
   display: flex;
   flex-direction: column;
@@ -48,6 +66,8 @@ const source = `## 这是
   display: flex;
   width: 60vw;
   margin-top: 2rem;
+  line-height: 2.5rem;
+  align-items: center;
   justify-content: center;
 }
 </style>

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import * as Login from "../../api/login";
-import localCache from "../../util/cache";
+import { parseStringStyle } from "@vue/shared";
 import { ref, reactive, nextTick } from "vue";
-import { ResponseData } from "./../../interface/axios";
-import { useRouter } from "vue-router";
-const router = useRouter();
+
 const form = reactive({
-  username: "",
+  email: "",
   password: "",
 });
 const emailErr = ref();
@@ -25,7 +22,7 @@ const getFocus = () => {
 getFocus();
 console.log(pwdRef);
 const blurEmail = () => {
-  if (form.username.trim() === "") {
+  if (form.email.trim() === "") {
     emailErr.value.innerHTML = "邮箱地址不能为空";
     email_f_ref.value.style.opacity = "1";
     email_s_ref.value.style.opacity = "0";
@@ -48,27 +45,8 @@ const blurPwd = () => {
   }
 };
 
-const formSubmit = async () => {
-  if (form.password.trim() === "" || form.username.trim() === "") return;
-  const result = await Login.reqLogin(form);
-  console.log(result);
-  if (result.code == "200") {
-    ElMessage({
-      message: "登录成功，即将跳转",
-      type: "success",
-    });
-    localCache.setCache("blog_token", result.data.token);
-
-    setTimeout(() => {
-      router.push("/home");
-    }, 1000);
-  } else {
-    console.log("请求失败");
-    ElMessage({
-      message: "邮箱或者密码不正确",
-      type: "error",
-    });
-  }
+const formSubmit = () => {
+  if (form.password.trim() === "" || form.email.trim() === "") return;
 };
 </script>
 
@@ -76,13 +54,13 @@ const formSubmit = async () => {
   <div class="container">
     <form id="form">
       <div class="social">
-        <div class="title">请 登录</div>
-        <div class="question">
+        <div class="title">请 注册</div>
+        <!-- <div class="question">
           你没有账号? <br />
-          <span @click="router.push('/register')">注 册</span>
-        </div>
+          <span>注 册</span>
+        </div> -->
 
-        <div class="btn">
+        <!-- <div class="btn">
           <div class="btn-1">
             <img src="https://img.icons8.com/color/30/000000/google-logo.png" />
             登 录
@@ -93,9 +71,9 @@ const formSubmit = async () => {
             />
             登 录
           </div>
-        </div>
+        </div> -->
 
-        <div class="or">Or</div>
+        <!-- <div class="or">Or</div> -->
       </div>
       <div>
         <label for="email" ref="email">邮箱</label>
@@ -109,7 +87,7 @@ const formSubmit = async () => {
           name="email"
           id="email"
           placeholder="请输入邮箱地址"
-          v-model="form.username"
+          v-model="form.email"
           @blur="blurEmail"
           ref="emailRef"
         />

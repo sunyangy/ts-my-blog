@@ -1,18 +1,42 @@
 <script setup lang="ts">
+import * as Article from "../../api/article";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-import { ref } from "vue";
-const pushAricle = () => {
-  console.log(text.value);
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+
+const router = useRouter();
+
+type articleType = {
+  title: string;
+  content: string;
 };
 
-let title = ref("");
+const article: articleType = reactive({
+  title: "",
+  content: "# hello world",
+});
 
-let text = ref("# hello world");
-
-const onChange = (val: string) => {
-  text.value = val;
+const pushAricle = async () => {
+  const result = await Article.reqPubArticle(article);
+  if (result.code == "200") {
+    ElMessage({
+      type: "success",
+      message: "博客发表成功",
+    });
+    setTimeout(() => {
+      router.push("/home");
+    }, 1000);
+  } else {
+    ElMessage({
+      type: "error",
+      message: "博客发表失败",
+    });
+  }
 };
+
+const onChange = (val: string) => {};
 
 const onUploadImg = (files: any) => {
   console.log(Array.from(files));
@@ -29,14 +53,14 @@ const onUploadImg = (files: any) => {
           name="title"
           id="title"
           placeholder="请输入标题"
-          v-model="title"
+          v-model="article.title"
         />
       </div>
       <button class="btn-63" @click="pushAricle"><span>发布</span></button>
     </div>
     <md-editor
       style="height: 80vh"
-      v-model="text"
+      v-model="article.content"
       @onChange="onChange"
       @onUploadImg="onUploadImg"
     />
