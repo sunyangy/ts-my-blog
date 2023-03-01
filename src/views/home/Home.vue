@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Markdown from "vue3-markdown-it";
 import InfoCard from "../../components/InfoCard.vue";
+import Pagination from "../../components/Pagination.vue";
 import * as Article from "../../api/article";
 import { onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const state = reactive({
+  total: 0,
   page: 1,
   size: 5,
   articles: [],
@@ -15,6 +17,13 @@ onMounted(() => {
 });
 const getArticleList = async () => {
   const result = await Article.reqGetArticleList(state.page, state.size);
+  state.articles = result.data.result;
+  state.total = result.data.total;
+};
+
+const handleCurrentChange = async (val: number) => {
+  const result = await Article.reqGetArticleList(val, state.size);
+  state.page = val;
   state.articles = result.data.result;
 };
 </script>
@@ -39,6 +48,16 @@ const getArticleList = async () => {
         </article>
       </main>
     </div>
+  </div>
+  <div class="page">
+    <el-pagination
+      background
+      :total="state.total"
+      :current-page="state.page"
+      :page-size="5"
+      @current-change="handleCurrentChange"
+      layout="prev, pager, next"
+    ></el-pagination>
   </div>
 </template>
 
@@ -122,6 +141,12 @@ const getArticleList = async () => {
       }
     }
   }
+}
+
+.page {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
 
 @media (max-width: 1536px) {

@@ -51,6 +51,7 @@ const blurPwd = () => {
 const formSubmit = async () => {
   if (form.password.trim() === "" || form.username.trim() === "") return;
   const result = await Login.reqLogin(form);
+  console.log(1);
   console.log(result);
   if (result.code == "200") {
     ElMessage({

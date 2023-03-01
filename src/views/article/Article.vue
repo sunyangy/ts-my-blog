@@ -4,7 +4,6 @@ import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
 
 const router = useRouter();
 

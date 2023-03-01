@@ -40,9 +40,9 @@ onMounted(() => {
 
 <style scoped lang="less">
 article {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
 }
 
 .top {
