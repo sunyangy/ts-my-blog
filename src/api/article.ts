@@ -16,8 +16,6 @@ export const reqGetArticleList = (page: number, size: number) => {
     })
 }
 
-
-
 export const reqGetArticleById = (id: any) => {
     return service({
         url: `/article/${id}`,

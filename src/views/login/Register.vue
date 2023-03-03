@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { parseStringStyle } from "@vue/shared";
+import { ElMessage } from "element-plus";
 import { ref, reactive, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import * as Login from "../../api/login";
+
+const router = useRouter();
 
 const form = reactive({
-  email: "",
+  username: "",
   password: "",
 });
 const emailErr = ref();
@@ -22,7 +27,7 @@ const getFocus = () => {
 getFocus();
 console.log(pwdRef);
 const blurEmail = () => {
-  if (form.email.trim() === "") {
+  if (form.username.trim() === "") {
     emailErr.value.innerHTML = "邮箱地址不能为空";
     email_f_ref.value.style.opacity = "1";
     email_s_ref.value.style.opacity = "0";
@@ -45,8 +50,23 @@ const blurPwd = () => {
   }
 };
 
-const formSubmit = () => {
-  if (form.password.trim() === "" || form.email.trim() === "") return;
+const formSubmit = async () => {
+  if (form.password.trim() === "" || form.username.trim() === "") return;
+  const result = await Login.reqRegister(form);
+  if (result.code == "200") {
+    ElMessage({
+      type: "success",
+      message: "注册成功，即将跳转登录页面",
+    });
+    setTimeout(() => {
+      router.push("/login");
+    }, 1500);
+  } else {
+    ElMessage({
+      type: "error",
+      message: "注册失败",
+    });
+  }
 };
 </script>
 
@@ -87,7 +107,7 @@ const formSubmit = () => {
           name="email"
           id="email"
           placeholder="请输入邮箱地址"
-          v-model="form.email"
+          v-model="form.username"
           @blur="blurEmail"
           ref="emailRef"
         />
